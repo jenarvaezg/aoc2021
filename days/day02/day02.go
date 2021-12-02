@@ -1,8 +1,8 @@
 package main
 
 import (
+	"aoc2021/utils/files"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -23,15 +23,6 @@ type movement struct {
 type position struct {
 	horizontal int64
 	depth      int64
-}
-
-func readInput() string {
-	dat, err := os.ReadFile("input.txt")
-	if err != nil {
-		panic(err)
-	}
-	return string(dat)
-
 }
 
 func parseDirections(s string) []movement {
@@ -83,7 +74,7 @@ func getFinalPositionWithAim(movements []movement) position {
 }
 
 func main() {
-	puzzleInput := readInput()
+	puzzleInput := files.ReadInput()
 	directions := parseDirections(puzzleInput)
 	position := getFinalPosition(directions)
 	fmt.Println(position.depth * position.horizontal)
