@@ -1,28 +1,26 @@
 package main
 
 import (
+	"aoc2021/utils/conversions"
 	"aoc2021/utils/files"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
-type direction string
-
 const (
-	UP      direction = "up"
-	DOWN    direction = "down"
-	FORWARD direction = "forward"
+	UP      = "up"
+	DOWN    = "down"
+	FORWARD = "forward"
 )
 
 type movement struct {
 	direction string
-	units     int64
+	units     int
 }
 
 type position struct {
-	horizontal int64
-	depth      int64
+	horizontal int
+	depth      int
 }
 
 func parseDirections(s string) []movement {
@@ -30,9 +28,8 @@ func parseDirections(s string) []movement {
 	movements := make([]movement, len(lines))
 	for i, line := range lines {
 		words := strings.Split(line, " ")
-		units, _ := strconv.ParseInt(words[1], 10, 64)
 		movements[i] = movement{
-			direction: words[0], units: units,
+			direction: words[0], units: conversions.MustAtoi(words[1]),
 		}
 	}
 	return movements
@@ -56,7 +53,7 @@ func getFinalPosition(movements []movement) position {
 }
 
 func getFinalPositionWithAim(movements []movement) position {
-	var aim int64
+	var aim int
 	currentPosition := position{}
 	for _, m := range movements {
 		switch m.direction {
