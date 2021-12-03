@@ -8,66 +8,52 @@ import (
 )
 
 func getMostCommon(lines []string) string {
-	result := make([]byte, len(lines[0]))
+	var result string
 	for i := range lines[0] {
-		counter := make(map[byte]int)
-		for _, line := range lines {
-			c := line[i]
-			v, _ := counter[c]
-			counter[c] = v + 1
-		}
-		if counter['0'] > counter['1'] {
-			result[i] = '0'
-		} else {
-			result[i] = '1'
-		}
-	}
-
-	return string(result)
-}
-
-func getLeastCommon(lines []string) string {
-	mostCommon := getMostCommon(lines)
-	result := ""
-
-	for _, v := range mostCommon {
-		if v == '1' {
-			result += "0"
-		} else {
-			result += "1"
-		}
+		result += getLeastCommonAt(lines, i)
 	}
 
 	return result
 }
 
-func bitCriteria(input []string, patternFn func([]string) string) string {
-	validLines := make(map[string]bool)
-	for _, l := range input {
-		validLines[l] = true
+func getMostCommonAt(lines []string, at int) string {
+	counter := make(map[byte]int)
+	for _, line := range lines {
+		c := line[at]
+		v, _ := counter[c]
+		counter[c] = v + 1
 	}
-	for i := 0; ; i++ {
-		currentLines := make([]string, len(validLines))
-		j := 0
-		// Get set values
-		for k := range validLines {
-			// Only add the character at current offset
-			currentLines[j] = string(k[i])
-			j++
-		}
+	if counter['0'] > counter['1'] {
+		return "0"
+	} else {
+		return "1"
+	}
+}
 
-		pattern := patternFn(currentLines)
-
-		for l := range validLines {
-			if l[i] != pattern[0] {
-				delete(validLines, l)
-			}
-			if len(validLines) == 1 {
-				return l
-			}
-		}
+func getLeastCommonAt(lines []string, at int) string {
+	if mostCommon := getMostCommonAt(lines, at); mostCommon == "1" {
+		return "0"
+	} else {
+		return "1"
 	}
 
+}
+
+func bitCriteria(input []string, patternFn func([]string, int) string) string {
+	validLines := make([]string, len(input))
+	copy(validLines, input)
+
+	for bit := 0; len(validLines) > 1; bit++ {
+		pattern := patternFn(validLines, bit)
+		for i := 0; i < len(validLines); i++ {
+			if validLines[i][bit] != pattern[0] {
+				validLines = append(validLines[:i], validLines[i+1:]...)
+				i--
+			}
+		}
+	}
+
+	return validLines[0]
 }
 
 func main() {
@@ -78,8 +64,8 @@ func main() {
 	epsilon := gamma ^ conversions.MustAtobin(strings.Repeat("1", len(gammaStr)))
 	fmt.Println(gamma * epsilon)
 
-	oxygen := bitCriteria(lines, getMostCommon)
-	co2 := bitCriteria(lines, getLeastCommon)
+	oxygen := bitCriteria(lines, getMostCommonAt)
+	co2 := bitCriteria(lines, getLeastCommonAt)
 	fmt.Println(conversions.MustAtobin(oxygen) * conversions.MustAtobin(co2))
 
 }
