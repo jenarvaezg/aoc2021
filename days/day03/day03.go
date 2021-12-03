@@ -41,27 +41,22 @@ func getLeastCommon(lines []string) string {
 	return result
 }
 
-func bitCriteria(lines []string, most bool) string {
+func bitCriteria(input []string, patternFn func([]string) string) string {
 	validLines := make(map[string]bool)
-	for _, l := range lines {
+	for _, l := range input {
 		validLines[l] = true
 	}
 	for i := 0; ; i++ {
-		var pattern string
-		ls := make([]string, len(validLines))
+		currentLines := make([]string, len(validLines))
 		j := 0
 		// Get set values
 		for k := range validLines {
 			// Only add the character at current offset
-			ls[j] = string(k[i])
+			currentLines[j] = string(k[i])
 			j++
 		}
 
-		if most {
-			pattern = getMostCommon(ls)
-		} else {
-			pattern = getLeastCommon(ls)
-		}
+		pattern := patternFn(currentLines)
 
 		for l := range validLines {
 			if l[i] != pattern[0] {
@@ -83,8 +78,8 @@ func main() {
 	epsilon := gamma ^ conversions.MustAtobin(strings.Repeat("1", len(gammaStr)))
 	fmt.Println(gamma * epsilon)
 
-	oxygen := bitCriteria(lines, true)
-	co2 := bitCriteria(lines, false)
+	oxygen := bitCriteria(lines, getMostCommon)
+	co2 := bitCriteria(lines, getLeastCommon)
 	fmt.Println(conversions.MustAtobin(oxygen) * conversions.MustAtobin(co2))
 
 }
