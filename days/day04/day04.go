@@ -31,7 +31,13 @@ func (b *bingoBoard) mark(draw string) bool {
 
 	// Check if winner vertically
 	for x := range b.grid {
-		if b.grid[0][x] == "X" && b.grid[1][x] == "X" && b.grid[2][x] == "X" && b.grid[3][x] == "X" && b.grid[4][x] == "X" {
+		win := true
+		for y := range b.grid {
+			if b.grid[y][x] != "X" {
+				win = false
+			}
+		}
+		if win {
 			return true
 		}
 	}
