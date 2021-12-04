@@ -36,7 +36,6 @@ func getLeastCommonAt(lines []string, at int) string {
 	} else {
 		return "1"
 	}
-
 }
 
 func bitCriteria(input []string, patternFn func([]string, int) string) string {
