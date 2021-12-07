@@ -1,6 +1,9 @@
-package math
+package intMath
 
-import "math"
+import (
+	"math"
+	"sort"
+)
 
 func IntAbs(v int) int {
 	if v > 0 {
@@ -20,4 +23,24 @@ func IntMax(values ...int) int {
 	}
 
 	return max
+}
+
+func IntMedian(values ...int) int {
+	sort.Ints(values)
+
+	return values[len(values)/2]
+}
+
+func IntMean(values ...int) int {
+	sum := IntSum(values...)
+
+	return sum / len(values)
+}
+
+func IntSum(values ...int) int {
+	total := 0
+	for _, v := range values {
+		total += v
+	}
+	return total
 }
