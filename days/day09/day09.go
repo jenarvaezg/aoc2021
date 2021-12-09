@@ -58,33 +58,34 @@ func (h heightMap) riskLevelSum() int {
 	return total
 }
 
-func (h heightMap) basinSize(coord coordinate, size int, visited map[coordinate]bool) int {
+func (h heightMap) basinSize(coord coordinate, visited map[coordinate]bool) int {
 	if _, ok := visited[coord]; ok {
-		return size - 1
+		return 0
 	} else {
 		visited[coord] = true
 	}
 
 	if h.grid[coord] == 9 {
-		return size - 1
+		return 0
 	}
 
+	size := 1
 	left, up, right, down := coord.x-1, coord.y-1, coord.x+1, coord.y+1
 
 	if left >= 0 {
-		size = h.basinSize(coordinate{left, coord.y}, size+1, visited)
+		size += h.basinSize(coordinate{left, coord.y}, visited)
 	}
 
 	if up >= 0 {
-		size = h.basinSize(coordinate{coord.x, up}, size+1, visited)
+		size += h.basinSize(coordinate{coord.x, up}, visited)
 	}
 
 	if right < h.width {
-		size = h.basinSize(coordinate{right, coord.y}, size+1, visited)
+		size += h.basinSize(coordinate{right, coord.y}, visited)
 	}
 
 	if down < h.height {
-		size = h.basinSize(coordinate{coord.x, down}, size+1, visited)
+		size += h.basinSize(coordinate{coord.x, down}, visited)
 	}
 
 	return size
@@ -94,7 +95,7 @@ func (h heightMap) basinSizes() []int {
 	var sizes []int
 
 	for _, minimum := range h.localMinimums() {
-		sizes = append(sizes, h.basinSize(minimum, 1, map[coordinate]bool{}))
+		sizes = append(sizes, h.basinSize(minimum, map[coordinate]bool{}))
 	}
 
 	sort.Ints(sizes)
@@ -126,7 +127,6 @@ func main() {
 	fmt.Println(heightMap.riskLevelSum())
 
 	basinSizes := heightMap.basinSizes()
-
 
 	fmt.Println(intMath.IntProduct(basinSizes[len(basinSizes)-3:]...))
 
