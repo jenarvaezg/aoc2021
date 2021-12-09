@@ -44,3 +44,11 @@ func IntSum(values ...int) int {
 	}
 	return total
 }
+
+func IntProduct(values ...int) int {
+	total := 1
+	for _, v := range values {
+		total *= v
+	}
+	return total
+}

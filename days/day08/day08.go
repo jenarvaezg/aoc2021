@@ -54,7 +54,7 @@ func signalsToInt(signal []string, mapping map[string]int) int {
 	return total
 }
 
-func stringUnorderedDifference(s, substr string) int {
+func stringSetDifference(s, substr string) int {
 	missingCount := 0
 	for _, c := range substr {
 		if !strings.Contains(s, string(c)) {
@@ -71,7 +71,7 @@ func obtainMapping(signal []string) map[string]int {
 
 	// First find easy values (1, 4, 7 and 8)
 	for i := 0; i < len(pendingSignals); i++ {
-		word := pendingSignals[i]
+		word := 	[i]
 		found := true
 
 		if l := len(word); l == 2 {
@@ -96,7 +96,7 @@ func obtainMapping(signal []string) map[string]int {
 	// find 3: word with len = 5 and having 7 as substring
 	for i := 0; i < len(pendingSignals); i++ {
 		word := pendingSignals[i]
-		if len(word) == 5 && stringUnorderedDifference(word, signalPositions[7]) == 0 {
+		if len(word) == 5 && stringSetDifference(word, signalPositions[7]) == 0 {
 			signalPositions[3] = word
 			pendingSignals = append(pendingSignals[:i], pendingSignals[i+1:]...)
 			break
@@ -108,9 +108,9 @@ func obtainMapping(signal []string) map[string]int {
 	for i := 0; i < len(pendingSignals); i++ {
 		word := pendingSignals[i]
 		if len(word) == 6 {
-			if stringUnorderedDifference(word, signalPositions[3]) == 0 {
+			if stringSetDifference(word, signalPositions[3]) == 0 {
 				signalPositions[9] = word
-			} else if stringUnorderedDifference(word, signalPositions[7]) == 0 {
+			} else if stringSetDifference(word, signalPositions[7]) == 0 {
 				signalPositions[0] = word
 			} else {
 				signalPositions[6] = word
@@ -124,7 +124,7 @@ func obtainMapping(signal []string) map[string]int {
 	// 5 is substr of 9, other is 2
 	for i := 0; i < len(pendingSignals); i++ {
 		word := pendingSignals[i]
-		if stringUnorderedDifference(word, signalPositions[9]) == 1 {
+		if stringSetDifference(word, signalPositions[9]) == 1 {
 			signalPositions[5] = word
 		} else {
 			signalPositions[2] = word
