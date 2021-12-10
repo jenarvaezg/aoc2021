@@ -32,13 +32,12 @@ func syntaxErrorScore(line string) int {
 	var parensStack []rune
 	for _, c := range line {
 		if v, ok := syntaxErrorScoreMapping[c]; !ok {
-			parensStack = append(parensStack, c)
+			parensStack = append([]rune{c}, parensStack...)
 		} else {
-			stackSize := len(parensStack)
-			if expectedMatch := parensMatching[c]; parensStack[stackSize-1] != expectedMatch {
+			if expectedMatch := parensMatching[c]; parensStack[0] != expectedMatch {
 				return v
 			}
-			parensStack = parensStack[:stackSize-1]
+			parensStack = parensStack[1:]
 		}
 	}
 	return 0
@@ -50,16 +49,10 @@ func autocompleteScore(line string) int {
 	var score int
 	for _, c := range line {
 		if _, ok := syntaxErrorScoreMapping[c]; !ok {
-			parensStack = append(parensStack, c)
+			parensStack = append([]rune{c}, parensStack...)
 		} else {
-			stackSize := len(parensStack)
-			parensStack = parensStack[:stackSize-1]
+			parensStack = parensStack[1:]
 		}
-	}
-
-	// reverse stack, we could avoid using this by switching to a queue but w/e
-	for i, j := 0, len(parensStack)-1; i < j; i, j = i+1, j-1 {
-		parensStack[i], parensStack[j] = parensStack[j], parensStack[i]
 	}
 
 	for _, c := range parensStack {
