@@ -61,32 +61,17 @@ func (h heightMap) riskLevelSum() int {
 func (h heightMap) basinSize(coord coordinate, visited map[coordinate]bool) int {
 	if _, ok := visited[coord]; ok {
 		return 0
-	} else {
-		visited[coord] = true
-	}
-
-	if h.grid[coord] == 9 {
+	} else if v, ok := h.grid[coord]; v == 9 || !ok {
 		return 0
 	}
 
+	visited[coord] = true
 	size := 1
-	left, up, right, down := coord.x-1, coord.y-1, coord.x+1, coord.y+1
 
-	if left >= 0 {
-		size += h.basinSize(coordinate{left, coord.y}, visited)
-	}
-
-	if up >= 0 {
-		size += h.basinSize(coordinate{coord.x, up}, visited)
-	}
-
-	if right < h.width {
-		size += h.basinSize(coordinate{right, coord.y}, visited)
-	}
-
-	if down < h.height {
-		size += h.basinSize(coordinate{coord.x, down}, visited)
-	}
+	size += h.basinSize(coordinate{coord.x - 1, coord.y}, visited) // left
+	size += h.basinSize(coordinate{coord.x, coord.y - 1}, visited) // up
+	size += h.basinSize(coordinate{coord.x + 1, coord.y}, visited) // right
+	size += h.basinSize(coordinate{coord.x, coord.y + 1}, visited) // down
 
 	return size
 }
