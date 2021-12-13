@@ -25,6 +25,18 @@ func IntMax(values ...int) int {
 	return max
 }
 
+func IntMin(values ...int) int {
+	min := math.MaxInt
+
+	for _, v := range values {
+		if min > v {
+			min = v
+		}
+	}
+
+	return min
+}
+
 func IntMedian(values ...int) int {
 	sort.Ints(values)
 
