@@ -2,6 +2,7 @@ package grid
 
 import (
 	"aoc2021/utils/conversions"
+	"aoc2021/utils/intMath"
 	"strconv"
 	"strings"
 )
@@ -10,10 +11,15 @@ type Coordinate struct {
 	X, Y int
 }
 
-var UP = Coordinate{0, -1}
-var DOWN = Coordinate{0, 1}
-var LEFT = Coordinate{-1, 0}
-var RIGHT = Coordinate{1, 0}
+var UP = Coordinate{X: 0, Y: -1}
+var DOWN = Coordinate{X: 0, Y: 1}
+var LEFT = Coordinate{X: -1, Y: 0}
+var RIGHT = Coordinate{X: 1, Y: 0}
+
+var LEFTDOWN = Coordinate{X: -1, Y: 1}
+var LEFTUP = Coordinate{X: -1, Y: -1}
+var RIGHDOWN = Coordinate{X: 1, Y: 1}
+var RIGHTUP = Coordinate{X: 1, Y: -1}
 
 var orthogonalNeighboorsDeltas = []Coordinate{
 	RIGHT,
@@ -23,10 +29,10 @@ var orthogonalNeighboorsDeltas = []Coordinate{
 }
 
 var diagonalNeighboorsDeltas = []Coordinate{
-	{-1, 1},
-	{-1, -1},
-	{1, 1},
-	{1, -1},
+	LEFTDOWN,
+	LEFTUP,
+	RIGHDOWN,
+	RIGHTUP,
 }
 
 func (c *Coordinate) Sum(other Coordinate) Coordinate {
@@ -52,10 +58,11 @@ func (c *Coordinate) Neighboors(diagonal bool, height, width int) []Coordinate {
 		neighboors = append(neighboors, neighboor)
 	}
 
-	//fmt.Println("I am ", c, "neighboors are", neighboors)
-
 	return neighboors
+}
 
+func (c *Coordinate) ManhattanDistance(other Coordinate) float64 {
+	return float64(intMath.IntAbs(other.X-c.X) + intMath.IntAbs(other.Y-c.Y))
 }
 
 type Grid struct {
@@ -67,7 +74,7 @@ func (g Grid) String() string {
 	var sb strings.Builder
 	for y := 0; y < g.Height; y++ {
 		for x := 0; x < g.Width; x++ {
-			sb.WriteString(strconv.Itoa(g.Cells[Coordinate{X: x, Y: y}]))
+			sb.WriteString(strconv.Itoa(g.Cells[Coordinate{x, y}]))
 		}
 		sb.WriteString("\n")
 	}
