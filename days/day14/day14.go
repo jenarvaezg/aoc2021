@@ -20,21 +20,6 @@ func parseInput(input string) (string, map[string]string) {
 	return lines[0], insertions
 }
 
-func step(template string, insertions map[string]string) string {
-	var sb strings.Builder
-
-	//var offset int
-	for i := 0; i < len(template)-1; i++ {
-		pair := string(template[i : i+2])
-		//fmt.Println(pair)
-		sb.WriteByte(template[i])
-		sb.WriteString(insertions[pair])
-	}
-	sb.WriteByte(template[len(template)-1])
-
-	return sb.String()
-}
-
 func getFrequencyLeastMost(pairs map[string]int) (int, int) {
 	counts := make(map[rune]int)
 	for k, v := range pairs {
@@ -73,7 +58,7 @@ func main() {
 	template, insertions := parseInput(puzzleInput)
 
 	least, most := stepTimes(template, insertions, 10)
-	fmt.Println(most-least, template)
+	fmt.Println(most - least)
 
 	least, most = stepTimes(template, insertions, 40)
 	fmt.Println(most - least)

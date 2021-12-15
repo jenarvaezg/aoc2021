@@ -10,11 +10,16 @@ type Coordinate struct {
 	X, Y int
 }
 
+var UP = Coordinate{0, -1}
+var DOWN = Coordinate{0, 1}
+var LEFT = Coordinate{-1, 0}
+var RIGHT = Coordinate{1, 0}
+
 var orthogonalNeighboorsDeltas = []Coordinate{
-	{-1, 0},
-	{0, 1},
-	{0, -1},
-	{1, 0},
+	RIGHT,
+	DOWN,
+	UP,
+	LEFT,
 }
 
 var diagonalNeighboorsDeltas = []Coordinate{
@@ -24,7 +29,7 @@ var diagonalNeighboorsDeltas = []Coordinate{
 	{1, -1},
 }
 
-func (c *Coordinate) sum(other Coordinate) Coordinate {
+func (c *Coordinate) Sum(other Coordinate) Coordinate {
 	return Coordinate{
 		c.X + other.X,
 		c.Y + other.Y,
@@ -40,7 +45,7 @@ func (c *Coordinate) Neighboors(diagonal bool, height, width int) []Coordinate {
 	}
 
 	for _, delta := range deltas {
-		neighboor := c.sum(delta)
+		neighboor := c.Sum(Coordinate(delta))
 		if neighboor.X < 0 || neighboor.Y < 0 || neighboor.X >= width || neighboor.Y >= height {
 			continue
 		}
@@ -72,8 +77,10 @@ func (g Grid) String() string {
 func StringToGrid(input string) Grid {
 	lines := strings.Split(input, "\n")
 	grid := make(map[Coordinate]int)
+	var width int
 
 	for i, l := range lines {
+		width = len(l)
 		horizontal := make([]int, len(l))
 		for j, c := range l {
 			horizontal[j] = conversions.MustAtoi(string(c))
@@ -82,5 +89,5 @@ func StringToGrid(input string) Grid {
 		}
 	}
 
-	return Grid{grid, len(lines), len(lines)}
+	return Grid{grid, len(lines), width}
 }
